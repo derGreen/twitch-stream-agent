@@ -19,20 +19,22 @@ var handlers = {
     },
 
     "StreamIntent": function () {
-
-       console.log('---- Debug Log ----  Stream Intent läuft');
+       var name = this.event.request.intent.slots.StreamID.value;
+       if (name === undefined){
+         this.emit(':tell',' sorry disen Name Kenne ich nicht')
+       }else{
+       this.emit(':tell', name + ' als Stream ID bekommen')}
+/*
+       console.log('---- Debug Log ----  StreamIntent läuft');
 
     var responseString = '',
-    speechOutput= '',
-    datas,
-    reprompt = 'noch jemand ?',
     mythis = this,
     channelID = this.event.request.intent.slots.StreamID.resolutions.resolutionsPerAuthority[0].values[0].value.id;
 
     console.log('---- Debug Log ---- suche läuft nach ' + channelID);
 
     if (channelID === undefined) {
-        speechOutput = 'Sorry, Ich kenne diesen Streamer noch nicht';
+        mythis.emit(':tell','Sorry, Ich kenne diesen Streamer noch nicht');
     }
 
     https.get('https://api.twitch.tv/kraken/streams/' + channelID + '?client_id=' + clientID , (res) => {
@@ -40,19 +42,19 @@ var handlers = {
        console.log('---- Debug Log ----Api call an '+'https://api.twitch.tv/kraken/streams/' + channelID + '?client_id=' + clientID);
 
       res.on('data', (d) => {
-        datas += d;
-        if (d === undefined){
-            speechOutput = 'ich kann keine Daten von ' + channelID + 'bekommen';
-        }
-      });
+        responseString += d;
+        /*if (d === undefined){
+              mythis.emit(':tell','ich kann keine Daten von ' + channelID + 'bekommen');
+        }*//*
+        });
 
       res.on('end', function(res) {
-        const object = datas;
-        var json = JSON.parse(object);
+        const speechOutput = responseString;
+        var json = JSON.parse(speechOutput);
        if (json.stream === null) {
-          speechOutput = channelID + ' ist momentan Offline';
+              mythis.emit(':tell',channelID + ' ist momentan Offline');
        }else {
-           speechOutput = channelID + ' streamt ' + json.stream.game + '. Heute mit dem Titel: ' + json.stream.channel.status;
+             mythis.emit(':tell', channelID + ' streamt ' + json.stream.game + '. Heute mit dem Titel: ' + json.stream.channel.status);
        }
 
       });
@@ -60,7 +62,7 @@ var handlers = {
     }).on('error', (e) => {
       console.error(e);
     });
-    this.emit(':ask', speechOutput, reprompt);
+    */
   },
     "LaunchRequest": function () {
     var speechOutput = "Stream Agent gestartet";
